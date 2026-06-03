@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Joy</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #2D7CDE;
+  --blue2: #0495F1;
+  --blue3: #82CCFA;
+  --dark: #070B0E;
+  --dark2: #2E3A44;
+  --light: #EFF3F6;
+  --white: #ffffff;
+  --radius: 20px;
+  --shadow: 0 8px 32px rgba(45,124,222,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; }
+
+/* DESKTOP LAYOUT */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar desktop */
+.sidebar {
+  display: none;
+  width: 260px;
+  background: white;
+  border-right: 1px solid rgba(45,124,222,0.1);
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+.sidebar-logo { margin-bottom: 0.5rem; }
+.sidebar-tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--blue3);
+  margin-bottom: 2.5rem;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
+.sidebar-btn {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1rem; border-radius: 12px;
+  border: none; background: none; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: var(--dark2);
+  transition: all 0.2s; text-align: left; font-family: inherit;
+}
+.sidebar-btn:hover { background: var(--light); color: var(--dark); }
+.sidebar-btn.active { background: rgba(45,124,222,0.1); color: var(--blue); }
+.sidebar-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.sidebar-exit {
+  margin-top: auto;
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1rem; border-radius: 12px;
+  border: none; background: none; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: #F44336;
+  transition: all 0.2s; font-family: inherit;
+}
+.sidebar-exit:hover { background: rgba(244,67,54,0.08); }
+.sidebar-exit svg { width: 20px; height: 20px; }
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* SCREENS */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* WELCOME */
+#screen-welcome {
+  background: var(--blue);
+  align-items: center; justify-content: center;
+  text-align: center; padding: 2rem;
+  min-height: 100vh;
+}
+.welcome-logo { margin-bottom: 1.5rem; animation: fadeUp 0.6s ease; }
+.welcome-tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 3px;
+  color: rgba(255,255,255,0.8); margin-bottom: 3rem;
+  animation: fadeUp 0.8s ease;
+}
+.welcome-title { font-size: 28px; font-weight: 700; color: white; margin-bottom: 0.5rem; animation: fadeUp 0.9s ease; }
+.welcome-sub { font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 3rem; animation: fadeUp 1s ease; }
+.welcome-cards { display: flex; gap: 1rem; width: 100%; max-width: 440px; animation: fadeUp 1.1s ease; }
+.role-card {
+  flex: 1; background: white; border-radius: var(--radius);
+  padding: 2rem 1rem; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none; text-align: center;
+}
+.role-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
+.role-card .icon { font-size: 36px; margin-bottom: 0.75rem; }
+.role-card .label { font-size: 14px; font-weight: 700; color: var(--blue); }
+.role-card .sublabel { font-size: 12px; color: var(--dark2); margin-top: 4px; }
+
+/* NAVBAR mobile */
+.navbar {
+  background: white; padding: 0.75rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(45,124,222,0.1);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-btn {
+  background: none; border: none; cursor: pointer; padding: 6px;
+  border-radius: 50%; color: var(--dark2); font-size: 18px;
+  transition: background 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.nav-btn:hover { background: var(--light); }
+.nav-pill {
+  font-size: 12px; font-weight: 700; background: var(--blue);
+  color: white; padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer;
+  font-family: inherit;
+}
+
+/* SWIPE */
+#screen-swipe { background: var(--light); }
+.swipe-header { padding: 1.25rem 1.25rem 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+.swipe-title { font-size: 20px; font-weight: 700; color: var(--dark); }
+.swipe-sub { font-size: 13px; color: var(--dark2); margin-top: 2px; }
+
+.swipe-area {
+  flex: 1; display: flex; align-items: center;
+  justify-content: center; padding: 1rem; position: relative;
+}
+.card-stack { position: relative; width: 100%; max-width: 380px; height: 540px; }
+
+/* JOB CARD */
+.job-card {
+  position: absolute; width: 100%; height: 100%;
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  cursor: grab; user-select: none; touch-action: none;
+  will-change: transform;
+}
+.job-card.back-1 {
+  transform: rotate(2deg) translateY(10px) scale(0.96);
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.job-card.back-2 {
+  transform: rotate(-1.5deg) translateY(20px) scale(0.92);
+  z-index: 0;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.job-card.front { z-index: 10; }
+.job-card.promote-to-front {
+  animation: promoteCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.job-card.promote-to-back1 {
+  animation: promoteToBack1 0.4s ease forwards;
+}
+
+.card-top {
+  background: var(--blue); padding: 1.5rem; color: white;
+  min-height: 170px; display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative; overflow: hidden;
+}
+.card-top::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 50%;
+}
+.card-company-logo {
+  width: 50px; height: 50px; background: white; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.75rem; font-size: 24px; position: relative; z-index: 1;
+}
+.card-title { font-size: 22px; font-weight: 700; margin-bottom: 2px; position: relative; z-index: 1; }
+.card-company { font-size: 14px; opacity: 0.85; position: relative; z-index: 1; }
+
+.card-body { padding: 1.25rem; overflow-y: auto; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+.tag {
+  font-size: 11px; font-weight: 600; padding: 4px 10px;
+  border-radius: 20px; border: 1.5px solid var(--blue3);
+  color: var(--blue); background: rgba(130,204,250,0.12);
+}
+.tag.green { border-color: #4CAF50; color: #2e7d32; background: rgba(76,175,80,0.08); }
+.tag.orange { border-color: #FF9800; color: #e65100; background: rgba(255,152,0,0.08); }
+.card-desc { font-size: 13px; color: var(--dark2); line-height: 1.6; margin-bottom: 1rem; }
+.card-info-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 1rem;
+}
+.card-info-item {
+  background: var(--light); border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+}
+.card-info-label { font-size: 10px; color: var(--dark2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.card-info-value { font-size: 13px; font-weight: 700; color: var(--dark); }
+.card-salary {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 700; color: var(--blue);
+  padding: 0.75rem; background: rgba(45,124,222,0.07); border-radius: 12px;
+}
+
+/* INDICATORS */
+.like-indicator {
+  position: absolute; top: 1.5rem; left: 1.5rem;
+  background: #4CAF50; color: white; font-weight: 800; font-size: 18px;
+  padding: 6px 16px; border-radius: 8px; opacity: 0;
+  transform: rotate(-15deg); pointer-events: none;
+  letter-spacing: 1px; z-index: 20;
+  border: 2px solid white;
+}
+.nope-indicator {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: #F44336; color: white; font-weight: 800; font-size: 18px;
+  padding: 6px 16px; border-radius: 8px; opacity: 0;
+  transform: rotate(15deg); pointer-events: none;
+  letter-spacing: 1px; z-index: 20;
+  border: 2px solid white;
+}
+
+/* ACTION BUTTONS */
+.action-buttons { display: flex; justify-content: center; gap: 1.5rem; padding: 1rem 1.25rem 1.5rem; align-items: center; }
+.action-btn {
+  border-radius: 50%; border: none; cursor: pointer; font-size: 22px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  width: 60px; height: 60px;
+}
+.action-btn:hover { transform: scale(1.12); }
+.action-btn:active { transform: scale(0.95); }
+.btn-nope { background: white; color: #F44336; box-shadow: 0 4px 16px rgba(244,67,54,0.25); }
+.btn-like { background: var(--blue); color: white; box-shadow: 0 4px 20px rgba(45,124,222,0.4); width: 72px !important; height: 72px !important; font-size: 28px !important; }
+.btn-super { background: white; color: var(--blue2); box-shadow: 0 4px 16px rgba(4,149,241,0.25); }
+
+/* BOTTOM NAV mobile */
+.bottom-nav {
+  background: white; display: flex;
+  border-top: 1px solid rgba(45,124,222,0.1);
+  padding: 0.5rem 0 calc(0.25rem + env(safe-area-inset-bottom));
+  position: sticky; bottom: 0; z-index: 90;
+}
+.bnav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 0.4rem; border: none; background: none; cursor: pointer;
+  color: var(--dark2); font-size: 10px; font-weight: 700;
+  transition: color 0.2s; font-family: inherit;
+}
+.bnav-btn.active { color: var(--blue); }
+.bnav-btn svg { width: 22px; height: 22px; }
+
+/* MATCH OVERLAY */
+.match-overlay {
+  position: fixed; inset: 0; background: rgba(45,124,222,0.97);
+  display: none; flex-direction: column; align-items: center;
+  justify-content: center; z-index: 1000; text-align: center; padding: 2rem;
+}
+.match-overlay.show { display: flex; animation: matchPop 0.4s ease; }
+.match-emoji { font-size: 60px; margin-bottom: 0.5rem; }
+.match-title { font-family: 'Bebas Neue', sans-serif; font-size: 60px; color: white; letter-spacing: 4px; line-height: 1; margin-bottom: 0.5rem; }
+.match-sub { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 2rem; }
+.match-company { background: white; border-radius: var(--radius); padding: 1.5rem; width: 100%; max-width: 320px; margin-bottom: 2rem; }
+.match-company-name { font-size: 20px; font-weight: 700; color: var(--blue); }
+.match-company-job { font-size: 14px; color: var(--dark2); margin-top: 4px; }
+.match-actions { display: flex; gap: 1rem; }
+.match-btn { padding: 0.875rem 1.75rem; border-radius: 14px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: transform 0.15s; }
+.match-btn:hover { transform: scale(1.04); }
+.btn-whatsapp { background: #25D366; color: white; }
+.btn-continue { background: white; color: var(--blue); }
+
+/* EMPRESA */
+#screen-empresa { background: var(--light); }
+.empresa-tabs { display: flex; padding: 1rem 1.25rem 0; gap: 0.5rem; }
+.tab-btn {
+  flex: 1; padding: 0.65rem; border: none; border-radius: 12px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  background: white; color: var(--dark2); transition: all 0.2s; font-family: inherit;
+}
+.tab-btn.active { background: var(--blue); color: white; }
+.empresa-content { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; }
+
+.candidato-card {
+  background: white; border-radius: var(--radius); padding: 1rem;
+  margin-bottom: 0.75rem; display: flex; gap: 1rem; align-items: center;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(45,124,222,0.08);
+}
+.candidato-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.candidato-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--blue3); flex-shrink: 0; }
+.candidato-info { flex: 1; min-width: 0; }
+.candidato-name { font-size: 15px; font-weight: 700; color: var(--dark); }
+.candidato-puesto { font-size: 13px; color: var(--blue); font-weight: 600; }
+.candidato-meta { font-size: 12px; color: var(--dark2); margin-top: 2px; }
+.candidato-badge { background: rgba(45,124,222,0.1); color: var(--blue); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+
+.empleo-card { background: white; border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 2px 8px rgba(45,124,222,0.08); }
+.empleo-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.empleo-title { font-size: 16px; font-weight: 700; color: var(--dark); }
+.empleo-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.status-active { background: rgba(76,175,80,0.1); color: #2e7d32; }
+.empleo-meta { font-size: 12px; color: var(--dark2); margin-bottom: 0.75rem; line-height: 1.6; }
+.empleo-stats { display: flex; gap: 1.5rem; }
+.stat { text-align: center; }
+.stat-num { font-size: 22px; font-weight: 700; color: var(--blue); }
+.stat-label { font-size: 11px; color: var(--dark2); }
+
+/* REGISTRO */
+#screen-registro { background: var(--light); }
+.registro-header { background: var(--blue); padding: 1.5rem 1.25rem; color: white; display: flex; align-items: center; gap: 1rem; }
+.back-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.back-btn:hover { background: rgba(255,255,255,0.3); }
+.registro-title { font-size: 20px; font-weight: 700; }
+.registro-subtitle { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+.registro-form { padding: 1.5rem; flex: 1; overflow-y: auto; max-width: 600px; width: 100%; margin: 0 auto; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.form-group { margin-bottom: 1rem; }
+.form-label { font-size: 12px; font-weight: 700; color: var(--dark2); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-input {
+  width: 100%; padding: 0.8rem 1rem; border: 1.5px solid rgba(45,124,222,0.2);
+  border-radius: 12px; font-size: 14px; background: white; color: var(--dark);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit;
+}
+.form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(45,124,222,0.1); }
+.form-select {
+  width: 100%; padding: 0.8rem 1rem; border: 1.5px solid rgba(45,124,222,0.2);
+  border-radius: 12px; font-size: 14px; background: white; color: var(--dark);
+  outline: none; font-family: inherit; appearance: none; cursor: pointer;
+}
+.form-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(45,124,222,0.1); }
+.submit-btn {
+  width: 100%; background: var(--blue); color: white; border: none;
+  border-radius: 14px; padding: 1rem; font-size: 16px; font-weight: 700;
+  cursor: pointer; margin-top: 0.5rem; transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+.submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(7,11,14,0.55); display: none; align-items: flex-end; z-index: 500; backdrop-filter: blur(2px); }
+.modal-overlay.show { display: flex; }
+.modal-sheet { background: white; width: 100%; border-radius: 24px 24px 0 0; padding: 1.5rem; max-height: 88vh; overflow-y: auto; animation: slideUp 0.3s ease; max-width: 500px; margin: 0 auto; }
+.modal-handle { width: 40px; height: 4px; background: var(--light); border-radius: 2px; margin: 0 auto 1.5rem; }
+.modal-header { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.25rem; }
+.modal-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--blue3); flex-shrink: 0; }
+.modal-name { font-size: 22px; font-weight: 700; color: var(--dark); }
+.modal-puesto { font-size: 15px; color: var(--blue); font-weight: 600; margin-top: 2px; }
+.modal-barrio { font-size: 13px; color: var(--dark2); margin-top: 2px; }
+.modal-section { margin-top: 1.25rem; }
+.modal-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 0.4rem; }
+.modal-text { font-size: 14px; color: var(--dark); line-height: 1.6; background: var(--light); padding: 0.75rem; border-radius: 10px; }
+.modal-whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #25D366; color: white; border: none; border-radius: 14px; padding: 1rem; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 1.5rem; font-family: inherit; transition: opacity 0.2s; }
+.modal-whatsapp-btn:hover { opacity: 0.9; }
+.close-modal-btn { width: 100%; background: none; border: 1.5px solid rgba(45,124,222,0.2); border-radius: 12px; padding: 0.75rem; font-size: 14px; cursor: pointer; margin-top: 0.5rem; color: var(--dark2); font-family: inherit; transition: background 0.2s; }
+.close-modal-btn:hover { background: var(--light); }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 4rem 2rem; color: var(--dark2); }
+.empty-icon { font-size: 52px; margin-bottom: 1rem; }
+.empty-title { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+.empty-sub { font-size: 14px; line-height: 1.7; max-width: 280px; margin: 0 auto; }
+
+/* LOADING */
+.loading-screen { position: fixed; inset: 0; background: var(--blue); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; transition: opacity 0.5s; }
+.loading-screen.hidden { opacity: 0; pointer-events: none; }
+.loading-dots { display: flex; gap: 8px; margin-top: 1.5rem; }
+.dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; animation: bounce 1s infinite; }
+.dot:nth-child(2) { animation-delay: 0.18s; }
+.dot:nth-child(3) { animation-delay: 0.36s; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: 0.75rem 1.5rem; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes matchPop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-8px); opacity: 1; } }
+@keyframes flyRight { to { transform: translateX(160%) rotate(28deg); opacity: 0; } }
+@keyframes flyLeft { to { transform: translateX(-160%) rotate(-28deg); opacity: 0; } }
+@keyframes promoteCard {
+  from { transform: rotate(2deg) translateY(10px) scale(0.96); }
+  to { transform: rotate(0deg) translateY(0) scale(1); }
+}
+@keyframes promoteToBack1 {
+  from { transform: rotate(-1.5deg) translateY(20px) scale(0.92); }
+  to { transform: rotate(2deg) translateY(10px) scale(0.96); }
+}
+.fly-right { animation: flyRight 0.35s ease forwards !important; transition: none !important; }
+.fly-left { animation: flyLeft 0.35s ease forwards !important; transition: none !important; }
+
+/* DESKTOP RESPONSIVE */
+@media (min-width: 768px) {
+  .sidebar { display: flex; }
+  .navbar { display: none; }
+  .bottom-nav { display: none; }
+
+  #screen-welcome { min-height: 100vh; }
+
+  .app-shell {
+    background: var(--light);
+  }
+
+  /* Swipe desktop */
+  #screen-swipe { flex-direction: row; min-height: 100vh; }
+  .swipe-main {
+    flex: 1; display: flex; flex-direction: column;
+  }
+  .swipe-area { padding: 2rem; }
+  .card-stack { max-width: 420px; height: 580px; }
+
+  /* Empresa desktop */
+  #screen-empresa { flex-direction: column; }
+  .empresa-tabs { max-width: 700px; }
+  .empresa-content { max-width: 700px; }
+
+  /* Registro desktop */
+  .registro-header { padding: 2rem; }
+  .registro-form { max-width: 640px; padding: 2rem; }
+
+  /* Modal desktop */
+  .modal-overlay { align-items: center; }
+  .modal-sheet { border-radius: 24px; max-width: 480px; }
+
+  .toast { bottom: 2rem; }
+
+  .welcome-title { font-size: 36px; }
+  .welcome-sub { font-size: 17px; }
+  .role-card { padding: 2.5rem 1.5rem; }
+}
+
+@media (min-width: 1100px) {
+  .sidebar { width: 280px; }
+  .card-stack { max-width: 440px; height: 600px; }
+  .empresa-content { max-width: 800px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loading">
+  <svg width="90" height="78" viewBox="0 0 281.34 244.3" fill="white">
+    <path d="M68.53,144.55c0-9.28,.34-100.08,1.17-103.9C75.29,14.8,91.22,2.17,115.43,.15c.7-.06,1.41-.07,2.11-.05,7.36,.21,14.33,.75,20.94,1.62,15.64,2.05,27.35,15.91,26.02,31.63-.74,8.76-5.34,15.59-14.38,14.08-.47-.08-.93-.16-1.4-.2-3.22-.32-16.6-1.64-19.92-1.97-.5-.05-1.01-.09-1.51-.09-5.36-.03-9.86,1.82-13.16,5.54-2.78,3.13-4.16,7.25-4.16,11.44,0,15.55,0,71.16,0,80.37,0,1.09-.07,2.19-.3,3.26-3.78,17.58-34.65,19.51-40.82,.96-.23-.7-.32-1.45-.32-2.19Z"/>
+    <path d="M212.21,15.17c.05,9.28,.18,100.08-.63,103.91-5.45,25.87-21.31,38.58-45.5,40.73-.71,.06-1.43,.08-2.14,.07-7.36-.17-14.34-.68-20.95-1.51-15.64-1.97-27.4-15.75-26.17-31.47,.69-8.78,5.25-15.64,14.31-14.18,.46,.08,.93,.15,1.4,.19,3.23,.3,16.67,1.56,19.96,1.86,.49,.05,.98,.08,1.47,.08,5.37,.01,9.87-1.86,13.16-5.61,2.76-3.15,4.12-7.27,4.1-11.46-.08-15.56-.37-71.22-.42-80.39,0-1.08,.06-2.17,.28-3.23,3.67-17.61,34.55-19.71,40.81-1.19,.24,.7,.33,1.44,.33,2.19Z"/>
+  </svg>
+  <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<div class="app-shell">
+
+  <!-- SIDEBAR (desktop) -->
+  <aside class="sidebar" id="sidebar" style="display:none">
+    <div class="sidebar-logo">
+      <svg width="80" height="70" viewBox="0 0 281.34 244.3" fill="#2D7CDE">
+        <path d="M68.53,144.55c0-9.28,.34-100.08,1.17-103.9C75.29,14.8,91.22,2.17,115.43,.15c.7-.06,1.41-.07,2.11-.05,7.36,.21,14.33,.75,20.94,1.62,15.64,2.05,27.35,15.91,26.02,31.63-.74,8.76-5.34,15.59-14.38,14.08-.47-.08-.93-.16-1.4-.2-3.22-.32-16.6-1.64-19.92-1.97-.5-.05-1.01-.09-1.51-.09-5.36-.03-9.86,1.82-13.16,5.54-2.78,3.13-4.16,7.25-4.16,11.44,0,15.55,0,71.16,0,80.37,0,1.09-.07,2.19-.3,3.26-3.78,17.58-34.65,19.51-40.82,.96-.23-.7-.32-1.45-.32-2.19Z"/>
+        <path d="M212.21,15.17c.05,9.28,.18,100.08-.63,103.91-5.45,25.87-21.31,38.58-45.5,40.73-.71,.06-1.43,.08-2.14,.07-7.36-.17-14.34-.68-20.95-1.51-15.64-1.97-27.4-15.75-26.17-31.47,.69-8.78,5.25-15.64,14.31-14.18,.46,.08,.93,.15,1.4,.19,3.23,.3,16.67,1.56,19.96,1.86,.49,.05,.98,.08,1.47,.08,5.37,.01,9.87-1.86,13.16-5.61,2.76-3.15,4.12-7.27,4.1-11.46-.08-15.56-.37-71.22-.42-80.39,0-1.08,.06-2.17,.28-3.23,3.67-17.61,34.55-19.71,40.81-1.19,.24,.7,.33,1.44,.33,2.19Z"/>
+      </svg>
+    </div>
+    <div class="sidebar-tagline">SONREÍ, TE ESTÁN BUSCANDO</div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    <button class="sidebar-exit" onclick="goTo('welcome')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Salir
+    </button>
+  </aside>
+
+  <div class="main-content">
+
+    <!-- WELCOME -->
+    <div class="screen active" id="screen-welcome">
+      <div class="welcome-logo">
+        <svg width="110" height="96" viewBox="0 0 281.34 244.3" fill="white">
+          <path d="M68.53,144.55c0-9.28,.34-100.08,1.17-103.9C75.29,14.8,91.22,2.17,115.43,.15c.7-.06,1.41-.07,2.11-.05,7.36,.21,14.33,.75,20.94,1.62,15.64,2.05,27.35,15.91,26.02,31.63-.74,8.76-5.34,15.59-14.38,14.08-.47-.08-.93-.16-1.4-.2-3.22-.32-16.6-1.64-19.92-1.97-.5-.05-1.01-.09-1.51-.09-5.36-.03-9.86,1.82-13.16,5.54-2.78,3.13-4.16,7.25-4.16,11.44,0,15.55,0,71.16,0,80.37,0,1.09-.07,2.19-.3,3.26-3.78,17.58-34.65,19.51-40.82,.96-.23-.7-.32-1.45-.32-2.19Z"/>
+          <path d="M212.21,15.17c.05,9.28,.18,100.08-.63,103.91-5.45,25.87-21.31,38.58-45.5,40.73-.71,.06-1.43,.08-2.14,.07-7.36-.17-14.34-.68-20.95-1.51-15.64-1.97-27.4-15.75-26.17-31.47,.69-8.78,5.25-15.64,14.31-14.18,.46,.08,.93,.15,1.4,.19,3.23,.3,16.67,1.56,19.96,1.86,.49,.05,.98,.08,1.47,.08,5.37,.01,9.87-1.86,13.16-5.61,2.76-3.15,4.12-7.27,4.1-11.46-.08-15.56-.37-71.22-.42-80.39,0-1.08,.06-2.17,.28-3.23,3.67-17.61,34.55-19.71,40.81-1.19,.24,.7,.33,1.44,.33,2.19Z"/>
+        </svg>
+      </div>
+      <div class="welcome-tagline">SONREÍ, TE ESTÁN BUSCANDO</div>
+      <div class="welcome-title">¿Qué querés hacer hoy?</div>
+      <div class="welcome-sub">La forma más fácil de encontrar trabajo</div>
+      <div class="welcome-cards">
+        <button class="role-card" onclick="goTo('registro')">
+          <div class="icon">👤</div>
+          <div class="label">Busco trabajo</div>
+          <div class="sublabel">Soy candidato</div>
+        </button>
+        <button class="role-card" onclick="goTo('empresa')">
+          <div class="icon">🏢</div>
+          <div class="label">Busco personal</div>
+          <div class="sublabel">Soy empresa</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="screen" id="screen-registro">
+      <div class="registro-header">
+        <button class="back-btn" onclick="goTo('welcome')">←</button>
+        <div>
+          <div class="registro-title">Crear tu perfil</div>
+          <div class="registro-subtitle">Completá tus datos para empezar</div>
+        </div>
+      </div>
+      <div class="registro-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre *</label>
+            <input class="form-input" type="text" id="reg-nombre" placeholder="Juan">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido *</label>
+            <input class="form-input" type="text" id="reg-apellido" placeholder="García">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="juan@mail.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input class="form-input" type="tel" id="reg-telefono" placeholder="11 1234-5678">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Puesto que buscás *</label>
+          <select class="form-select" id="reg-puesto">
+            <option value="">Seleccionar...</option>
+            <option>Mozo/a</option><option>Cocinero/a</option><option>Recepcionista</option>
+            <option>Cajero/a</option><option>Barista</option><option>Bartender</option>
+            <option>Repositor/a</option><option>Limpieza</option><option>Seguridad</option>
+            <option>Administrativo/a</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Años de experiencia</label>
+            <select class="form-select" id="reg-exp">
+              <option value="0">Sin experiencia</option>
+              <option value="1">1 año</option><option value="2">2 años</option>
+              <option value="3">3 años</option><option value="5">5+ años</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Barrio</label>
+            <input class="form-input" type="text" id="reg-barrio" placeholder="Palermo...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Trabajos anteriores</label>
+          <textarea class="form-input" id="reg-trabajos" rows="2" placeholder="Café Central (1 año), Restaurante La Parrilla (2 años)..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Educación</label>
+          <input class="form-input" type="text" id="reg-educacion" placeholder="Bachiller, Técnico, Universitario...">
+        </div>
+        <button class="submit-btn" id="reg-btn" onclick="registrarCandidato()">Empezar a buscar trabajo →</button>
+      </div>
+    </div>
+
+    <!-- SWIPE -->
+    <div class="screen" id="screen-swipe">
+      <div class="navbar">
+        <svg width="70" height="24" viewBox="0 0 281.34 244.3" fill="#2D7CDE">
+          <path d="M68.53,144.55c0-9.28,.34-100.08,1.17-103.9C75.29,14.8,91.22,2.17,115.43,.15c.7-.06,1.41-.07,2.11-.05,7.36,.21,14.33,.75,20.94,1.62,15.64,2.05,27.35,15.91,26.02,31.63-.74,8.76-5.34,15.59-14.38,14.08-.47-.08-.93-.16-1.4-.2-3.22-.32-16.6-1.64-19.92-1.97-.5-.05-1.01-.09-1.51-.09-5.36-.03-9.86,1.82-13.16,5.54-2.78,3.13-4.16,7.25-4.16,11.44,0,15.55,0,71.16,0,80.37,0,1.09-.07,2.19-.3,3.26-3.78,17.58-34.65,19.51-40.82,.96-.23-.7-.32-1.45-.32-2.19Z"/>
+          <path d="M212.21,15.17c.05,9.28,.18,100.08-.63,103.91-5.45,25.87-21.31,38.58-45.5,40.73-.71,.06-1.43,.08-2.14,.07-7.36-.17-14.34-.68-20.95-1.51-15.64-1.97-27.4-15.75-26.17-31.47,.69-8.78,5.25-15.64,14.31-14.18,.46,.08,.93,.15,1.4,.19,3.23,.3,16.67,1.56,19.96,1.86,.49,.05,.98,.08,1.47,.08,5.37,.01,9.87-1.86,13.16-5.61,2.76-3.15,4.12-7.27,4.1-11.46-.08-15.56-.37-71.22-.42-80.39,0-1.08,.06-2.17,.28-3.23,3.67-17.61,34.55-19.71,40.81-1.19,.24,.7,.33,1.44,.33,2.19Z"/>
+        </svg>
+        <button class="nav-btn" onclick="goTo('welcome')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="swipe-main">
+        <div class="swipe-header">
+          <div>
+            <div class="swipe-title">Empleos para vos</div>
+            <div class="swipe-sub" id="swipe-counter">Cargando...</div>
+          </div>
+        </div>
+        <div class="swipe-area">
+          <div class="card-stack" id="card-stack"></div>
+        </div>
+        <div class="action-buttons">
+          <button class="action-btn btn-nope" onclick="doSwipeLeft()" title="Pasar">✕</button>
+          <button class="action-btn btn-like" onclick="doSwipeRight()" title="Me interesa">♥</button>
+          <button class="action-btn btn-super" onclick="doSwipeRight()" title="Super Like">★</button>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="bnav-btn active" id="bnav-empleos" onclick="showSwipeTab('empleos', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Empleos
+        </button>
+        <button class="bnav-btn" id="bnav-matches" onclick="showSwipeTab('matches', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Matches
+        </button>
+        <button class="bnav-btn" id="bnav-perfil" onclick="showSwipeTab('perfil', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Perfil
+        </button>
+      </div>
+    </div>
+
+    <!-- EMPRESA -->
+    <div class="screen" id="screen-empresa">
+      <div class="navbar">
+        <svg width="70" height="24" viewBox="0 0 281.34 244.3" fill="#2D7CDE">
+          <path d="M68.53,144.55c0-9.28,.34-100.08,1.17-103.9C75.29,14.8,91.22,2.17,115.43,.15c.7-.06,1.41-.07,2.11-.05,7.36,.21,14.33,.75,20.94,1.62,15.64,2.05,27.35,15.91,26.02,31.63-.74,8.76-5.34,15.59-14.38,14.08-.47-.08-.93-.16-1.4-.2-3.22-.32-16.6-1.64-19.92-1.97-.5-.05-1.01-.09-1.51-.09-5.36-.03-9.86,1.82-13.16,5.54-2.78,3.13-4.16,7.25-4.16,11.44,0,15.55,0,71.16,0,80.37,0,1.09-.07,2.19-.3,3.26-3.78,17.58-34.65,19.51-40.82,.96-.23-.7-.32-1.45-.32-2.19Z"/>
+          <path d="M212.21,15.17c.05,9.28,.18,100.08-.63,103.91-5.45,25.87-21.31,38.58-45.5,40.73-.71,.06-1.43,.08-2.14,.07-7.36-.17-14.34-.68-20.95-1.51-15.64-1.97-27.4-15.75-26.17-31.47,.69-8.78,5.25-15.64,14.31-14.18,.46,.08,.93,.15,1.4,.19,3.23,.3,16.67,1.56,19.96,1.86,.49,.05,.98,.08,1.47,.08,5.37,.01,9.87-1.86,13.16-5.61,2.76-3.15,4.12-7.27,4.1-11.46-.08-15.56-.37-71.22-.42-80.39,0-1.08,.06-2.17,.28-3.23,3.67-17.61,34.55-19.71,40.81-1.19,.24,.7,.33,1.44,.33,2.19Z"/>
+        </svg>
+        <button class="nav-pill" onclick="goTo('welcome')">← Salir</button>
+      </div>
+      <div class="empresa-tabs">
+        <button class="tab-btn active" onclick="switchEmpresaTab('candidatos', this)">👥 Interesados</button>
+        <button class="tab-btn" onclick="switchEmpresaTab('empleos', this)">📋 Mis empleos</button>
+      </div>
+      <div class="empresa-content" id="empresa-content"></div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end app-shell -->
+
+<!-- MATCH OVERLAY -->
+<div class="match-overlay" id="match-overlay">
+  <div class="match-emoji">🎉</div>
+  <div class="match-title">¡MATCH!</div>
+  <div class="match-sub">La empresa está interesada en vos</div>
+  <div class="match-company">
+    <div class="match-company-name" id="match-company-name"></div>
+    <div class="match-company-job" id="match-company-job"></div>
+  </div>
+  <div class="match-actions">
+    <button class="match-btn btn-whatsapp" id="match-whatsapp-btn">💬 WhatsApp</button>
+    <button class="match-btn btn-continue" onclick="closeMatch()">Seguir viendo</button>
+  </div>
+</div>
+
+<!-- MODAL CANDIDATO -->
+<div class="modal-overlay" id="modal-candidato" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <img class="modal-avatar" id="modal-foto" src="" alt="">
+      <div>
+        <div class="modal-name" id="modal-nombre"></div>
+        <div class="modal-puesto" id="modal-puesto-text"></div>
+        <div class="modal-barrio" id="modal-barrio-text"></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Experiencia</div>
+      <div class="modal-text" id="modal-exp-text"></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Trabajos anteriores</div>
+      <div class="modal-text" id="modal-trabajos-text"></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Educación</div>
+      <div class="modal-text" id="modal-educacion-text"></div>
+    </div>
+    <button class="modal-whatsapp-btn" id="modal-wa-btn">💬 Contactar por WhatsApp</button>
+    <button class="close-modal-btn" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://gplkifzjdawoiajlaoda.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdwbGtpZnpqZGF3b2lhamxhb2RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MDEwOTIsImV4cCI6MjA5NjA3NzA5Mn0.vMBEQ7cjm7pgOHehpxwABcuaM_1gnS3LedDe9TCzyGw';
+const H = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
+
+async function sb(path, opts = {}) {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: H, ...opts });
+    const t = await r.text();
+    return t ? JSON.parse(t) : null;
+  } catch(e) { console.error(e); return null; }
+}
+
+let empleos = [], currentIdx = 0, currentCandidatoId = null;
+let isDragging = false, startX = 0, startY = 0, currentX = 0, activeCard = null;
+let currentRole = null;
+
+// NAV
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+
+  const sidebar = document.getElementById('sidebar');
+  const sidebarNav = document.getElementById('sidebar-nav');
+
+  if (screen === 'welcome') {
+    sidebar.style.display = 'none';
+    currentRole = null;
+  } else if (screen === 'registro') {
+    sidebar.style.display = 'none';
+    currentRole = 'candidato';
+  } else if (screen === 'swipe') {
+    if (window.innerWidth >= 768) {
+      sidebar.style.display = 'flex';
+      sidebarNav.innerHTML = `
+        <button class="sidebar-btn active" onclick="showSwipeTab('empleos', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Empleos
+        </button>
+        <button class="sidebar-btn" onclick="showSwipeTab('matches', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Matches
+        </button>
+        <button class="sidebar-btn" onclick="showSwipeTab('perfil', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Mi perfil
+        </button>`;
+    }
+    loadEmpleos();
+  } else if (screen === 'empresa') {
+    if (window.innerWidth >= 768) {
+      sidebar.style.display = 'flex';
+      sidebarNav.innerHTML = `
+        <button class="sidebar-btn active" onclick="switchEmpresaTab('candidatos', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Interesados
+        </button>
+        <button class="sidebar-btn" onclick="switchEmpresaTab('empleos', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Mis empleos
+        </button>`;
+    }
+    loadEmpresaTab('candidatos');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// EMPLEOS
+async function loadEmpleos() {
+  const stack = document.getElementById('card-stack');
+  stack.innerHTML = '<div style="text-align:center;padding:4rem 2rem;color:var(--dark2)"><div style="font-size:36px;margin-bottom:1rem">⏳</div>Cargando empleos...</div>';
+  const data = await sb('empleos?select=*,empresas(*)&activo=eq.true&order=created_at.desc');
+  if (!data || !data.length) {
+    stack.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Sin empleos por ahora</div><div class="empty-sub">Volvé más tarde para ver nuevas oportunidades.</div></div>';
+    document.getElementById('swipe-counter').textContent = '0 empleos disponibles';
+    return;
+  }
+  empleos = data; currentIdx = 0;
+  renderCards(); updateCounter();
+}
+
+function renderCards() {
+  const stack = document.getElementById('card-stack');
+  stack.innerHTML = '';
+  const visible = empleos.slice(currentIdx, currentIdx + 3);
+  if (!visible.length) {
+    stack.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-title">¡Los viste todos!</div><div class="empty-sub">Ya revisaste todos los empleos. Volvé más tarde para ver nuevas oportunidades.</div></div>';
+    return;
+  }
+  // Render back to front so front card is last child
+  [...visible].reverse().forEach((e, i) => {
+    const card = makeCard(e);
+    const pos = visible.length - 1 - i; // 0=front, 1=back1, 2=back2
+    if (pos === 0) card.classList.add('front');
+    else if (pos === 1) card.classList.add('back-1');
+    else card.classList.add('back-2');
+    stack.appendChild(card);
+  });
+  setupDrag();
+}
+
+function makeCard(e) {
+  const c = document.createElement('div');
+  c.className = 'job-card'; c.dataset.id = e.id;
+  const emp = e.empresas || {};
+  const emojis = {'Gastronomía':'🍽️','Hotelería':'🏨','Cafetería':'☕','Comercio':'🛒','Salud':'🏥','Limpieza':'🧹','Bar':'🍻'};
+  const emoji = emojis[e.rubro] || '💼';
+  c.innerHTML = `
+    <div class="like-indicator">ME GUSTA ♥</div>
+    <div class="nope-indicator">PASO ✕</div>
+    <div class="card-top">
+      <div class="card-company-logo">${emoji}</div>
+      <div class="card-title">${e.titulo}</div>
+      <div class="card-company">${emp.nombre || 'Empresa'}</div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag">📍 ${e.barrio}</span>
+        <span class="tag">${e.rubro}</span>
+        ${e.salario ? `<span class="tag green">💰 ${e.salario}</span>` : ''}
+      </div>
+      <div class="card-info-grid">
+        <div class="card-info-item">
+          <div class="card-info-label">Jornada</div>
+          <div class="card-info-value">${e.jornada || 'Full-time'}</div>
+        </div>
+        <div class="card-info-item">
+          <div class="card-info-label">Ubicación</div>
+          <div class="card-info-value">${e.barrio}</div>
+        </div>
+        ${e.horario ? `<div class="card-info-item">
+          <div class="card-info-label">Horario</div>
+          <div class="card-info-value">${e.horario}</div>
+        </div>` : ''}
+        ${e.dias ? `<div class="card-info-item">
+          <div class="card-info-label">Días</div>
+          <div class="card-info-value">${e.dias}</div>
+        </div>` : ''}
+      </div>
+      <div class="card-desc">${e.descripcion || 'Gran oportunidad laboral.'}</div>
+      ${e.salario
+        ? `<div class="card-salary">💰 ${e.salario}</div>`
+        : `<div class="card-salary" style="color:var(--dark2);background:var(--light)">💼 Salario a convenir</div>`}
+    </div>`;
+  return c;
+}
+
+function updateCounter() {
+  const r = Math.max(0, empleos.length - currentIdx);
+  document.getElementById('swipe-counter').textContent = `${r} empleo${r !== 1 ? 's' : ''} disponible${r !== 1 ? 's' : ''}`;
+}
+
+// DRAG
+function setupDrag() {
+  const top = document.querySelector('#card-stack .job-card.front');
+  if (!top) return;
+  top.addEventListener('mousedown', onStart);
+  top.addEventListener('touchstart', onStart, { passive: true });
+}
+
+function onStart(e) {
+  isDragging = true; activeCard = e.currentTarget;
+  startX = e.touches ? e.touches[0].clientX : e.clientX;
+  startY = e.touches ? e.touches[0].clientY : e.clientY;
+  activeCard.style.transition = 'none';
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: true });
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+}
+
+function onMove(e) {
+  if (!isDragging || !activeCard) return;
+  currentX = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+  const cy = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+  activeCard.style.transform = `translate(${currentX}px,${cy}px) rotate(${currentX * 0.07}deg)`;
+  const like = activeCard.querySelector('.like-indicator');
+  const nope = activeCard.querySelector('.nope-indicator');
+  const ratio = Math.min(Math.abs(currentX) / 80, 1);
+  if (currentX > 20) { like.style.opacity = ratio; nope.style.opacity = 0; }
+  else if (currentX < -20) { nope.style.opacity = ratio; like.style.opacity = 0; }
+  else { like.style.opacity = 0; nope.style.opacity = 0; }
+}
+
+function onEnd() {
+  if (!isDragging || !activeCard) return;
+  isDragging = false;
+  document.removeEventListener('mousemove', onMove);
+  document.removeEventListener('touchmove', onMove);
+  document.removeEventListener('mouseup', onEnd);
+  document.removeEventListener('touchend', onEnd);
+  if (currentX > 80) doSwipeRight();
+  else if (currentX < -80) doSwipeLeft();
+  else {
+    activeCard.style.transition = 'transform 0.3s ease';
+    activeCard.style.transform = '';
+    activeCard.querySelector('.like-indicator').style.opacity = 0;
+    activeCard.querySelector('.nope-indicator').style.opacity = 0;
+  }
+  activeCard = null; currentX = 0;
+}
+
+function animatePromotion() {
+  // Promote back cards forward with smooth animation
+  const back1 = document.querySelector('#card-stack .job-card.back-1');
+  const back2 = document.querySelector('#card-stack .job-card.back-2');
+  if (back1) {
+    back1.classList.remove('back-1');
+    back1.classList.add('front', 'promote-to-front');
+    setTimeout(() => back1.classList.remove('promote-to-front'), 400);
+  }
+  if (back2) {
+    back2.classList.remove('back-2');
+    back2.classList.add('back-1', 'promote-to-back1');
+    setTimeout(() => back2.classList.remove('promote-to-back1'), 500);
+  }
+}
+
+async function doSwipeRight() {
+  const top = document.querySelector('#card-stack .job-card.front');
+  if (!top) return;
+  const empleoId = top.dataset.id;
+  top.style.transition = 'none';
+  top.classList.add('fly-right');
+  animatePromotion();
+  if (currentCandidatoId) {
+    await sb('likes', { method: 'POST', body: JSON.stringify({ candidato_id: currentCandidatoId, empleo_id: empleoId }) });
+  }
+  const empleo = empleos.find(e => e.id === empleoId);
+  if (empleo && Math.random() > 0.45) setTimeout(() => showMatch(empleo), 420);
+  setTimeout(() => {
+    top.remove();
+    currentIdx++;
+    updateCounter();
+    // Add new back card if available
+    const nextIdx = currentIdx + 2;
+    if (nextIdx < empleos.length) {
+      const newCard = makeCard(empleos[nextIdx]);
+      newCard.classList.add('back-2');
+      newCard.style.opacity = '0';
+      document.getElementById('card-stack').insertBefore(newCard, document.getElementById('card-stack').firstChild);
+      setTimeout(() => { newCard.style.transition = 'opacity 0.3s'; newCard.style.opacity = '1'; }, 50);
+    }
+    setupDrag();
+    if (!document.querySelector('#card-stack .job-card')) renderCards();
+  }, 360);
+}
+
+async function doSwipeLeft() {
+  const top = document.querySelector('#card-stack .job-card.front');
+  if (!top) return;
+  top.style.transition = 'none';
+  top.classList.add('fly-left');
+  animatePromotion();
+  setTimeout(() => {
+    top.remove();
+    currentIdx++;
+    updateCounter();
+    const nextIdx = currentIdx + 2;
+    if (nextIdx < empleos.length) {
+      const newCard = makeCard(empleos[nextIdx]);
+      newCard.classList.add('back-2');
+      newCard.style.opacity = '0';
+      document.getElementById('card-stack').insertBefore(newCard, document.getElementById('card-stack').firstChild);
+      setTimeout(() => { newCard.style.transition = 'opacity 0.3s'; newCard.style.opacity = '1'; }, 50);
+    }
+    setupDrag();
+    if (!document.querySelector('#card-stack .job-card')) renderCards();
+  }, 360);
+}
+
+function showMatch(empleo) {
+  const emp = empleo.empresas || {};
+  document.getElementById('match-company-name').textContent = emp.nombre || 'Empresa';
+  document.getElementById('match-company-job').textContent = `${empleo.titulo} · ${empleo.barrio}`;
+  const btn = document.getElementById('match-whatsapp-btn');
+  if (emp.whatsapp) {
+    btn.onclick = () => window.open(`https://wa.me/${emp.whatsapp}?text=Hola! Vi tu oferta en Job Joy y me interesa el puesto de ${empleo.titulo}.`);
+    btn.style.display = '';
+  } else btn.style.display = 'none';
+  document.getElementById('match-overlay').classList.add('show');
+}
+function closeMatch() { document.getElementById('match-overlay').classList.remove('show'); }
+
+// SWIPE TABS
+function showSwipeTab(tab, btn) {
+  // Update active state in both sidebar and bottom nav
+  document.querySelectorAll('.bnav-btn, .sidebar-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const stack = document.getElementById('card-stack');
+  if (tab === 'empleos') { renderCards(); return; }
+  if (tab === 'matches') {
+    stack.innerHTML = `<div style="padding:1.5rem"><div class="empty-state"><div class="empty-icon">💙</div><div class="empty-title">Tus matches</div><div class="empty-sub">Cuando una empresa esté interesada en vos, el match aparece acá con el contacto directo de WhatsApp.</div></div></div>`;
+  }
+  if (tab === 'perfil') {
+    stack.innerHTML = `<div style="padding:1.5rem"><div class="empty-state"><div class="empty-icon">👤</div><div class="empty-title">Tu perfil</div><div class="empty-sub">Completá tu perfil para tener más chances de conseguir trabajo.</div><button onclick="goTo('registro')" style="margin-top:1.5rem;background:var(--blue);color:white;border:none;border-radius:14px;padding:0.75rem 2rem;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Editar perfil →</button></div></div>`;
+  }
+}
+
+// EMPRESA
+async function loadEmpresaTab(tab) {
+  switchEmpresaTab(tab, document.querySelector('.tab-btn'));
+}
+
+async function switchEmpresaTab(tab, btn) {
+  document.querySelectorAll('.tab-btn, .sidebar-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const content = document.getElementById('empresa-content');
+  content.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--dark2)">⏳ Cargando...</div>';
+  if (tab === 'candidatos') {
+    const data = await sb('candidatos?select=*&activo=eq.true&order=created_at.desc');
+    if (!data || !data.length) {
+      content.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Sin candidatos aún</div><div class="empty-sub">Cuando haya matches, los candidatos aparecerán acá.</div></div>';
+      return;
+    }
+    content.innerHTML = data.map(c => `
+      <div class="candidato-card" onclick='openCandidato(${JSON.stringify(c)})'>
+        <img class="candidato-avatar" src="${c.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.nombre+' '+c.apellido)}&background=2D7CDE&color=fff&size=112`}" alt="${c.nombre}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(c.nombre)}&background=2D7CDE&color=fff'">
+        <div class="candidato-info">
+          <div class="candidato-name">${c.nombre} ${c.apellido}</div>
+          <div class="candidato-puesto">${c.puesto}</div>
+          <div class="candidato-meta">📍 ${c.barrio || 'Sin barrio'} · ${c.experiencia_anios || 0} año${c.experiencia_anios !== 1 ? 's' : ''} exp.</div>
+        </div>
+        <div class="candidato-badge">Ver →</div>
+      </div>`).join('');
+  } else {
+    const data = await sb('empleos?select=*&order=created_at.desc');
+    if (!data || !data.length) {
+      content.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Sin empleos publicados</div><div class="empty-sub">Publicá tu primer aviso para recibir candidatos.</div></div>';
+      return;
+    }
+    content.innerHTML = data.map(e => `
+      <div class="empleo-card">
+        <div class="empleo-header">
+          <div class="empleo-title">${e.titulo}</div>
+          <span class="empleo-status ${e.activo ? 'status-active' : ''}">● ${e.activo ? 'Activo' : 'Cerrado'}</span>
+        </div>
+        <div class="empleo-meta">
+          📍 ${e.barrio} · ${e.jornada || 'Full-time'} · ${e.rubro}
+          ${e.horario ? ` · 🕐 ${e.horario}` : ''}
+          ${e.dias ? ` · 📅 ${e.dias}` : ''}
+          ${e.salario ? ` · 💰 ${e.salario}` : ''}
+        </div>
+        <div class="empleo-stats">
+          <div class="stat"><div class="stat-num">—</div><div class="stat-label">Likes</div></div>
+          <div class="stat"><div class="stat-num">—</div><div class="stat-label">Matches</div></div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function openCandidato(c) {
+  document.getElementById('modal-foto').src = c.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.nombre+' '+c.apellido)}&background=2D7CDE&color=fff&size=144`;
+  document.getElementById('modal-nombre').textContent = `${c.nombre} ${c.apellido}`;
+  document.getElementById('modal-puesto-text').textContent = c.puesto;
+  document.getElementById('modal-barrio-text').textContent = `📍 ${c.barrio || 'Sin barrio'}`;
+  document.getElementById('modal-exp-text').textContent = `${c.experiencia_anios || 0} año${c.experiencia_anios !== 1 ? 's' : ''} de experiencia`;
+  document.getElementById('modal-trabajos-text').textContent = c.trabajos_anteriores || 'Sin información';
+  document.getElementById('modal-educacion-text').textContent = c.educacion || 'Sin información';
+  const wa = document.getElementById('modal-wa-btn');
+  if (c.telefono) {
+    const num = c.telefono.replace(/\D/g,'');
+    wa.onclick = () => window.open(`https://wa.me/54${num}?text=Hola ${c.nombre}! Te contactamos desde Job Joy por tu perfil de ${c.puesto}.`);
+    wa.style.display = 'flex';
+  } else wa.style.display = 'none';
+  document.getElementById('modal-candidato').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-candidato').classList.remove('show'); }
+
+// REGISTRO
+async function registrarCandidato() {
+  const btn = document.getElementById('reg-btn');
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const apellido = document.getElementById('reg-apellido').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const puesto = document.getElementById('reg-puesto').value;
+  if (!nombre || !apellido || !email || !puesto) { showToast('⚠️ Completá los campos obligatorios'); return; }
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  const data = await sb('candidatos', {
+    method: 'POST',
+    body: JSON.stringify({
+      nombre, apellido, email,
+      telefono: document.getElementById('reg-telefono').value.trim(),
+      puesto,
+      experiencia_anios: parseInt(document.getElementById('reg-exp').value) || 0,
+      barrio: document.getElementById('reg-barrio').value.trim(),
+      trabajos_anteriores: document.getElementById('reg-trabajos').value.trim(),
+      educacion: document.getElementById('reg-educacion').value.trim()
+    })
+  });
+  if (data && data.length > 0) {
+    currentCandidatoId = data[0].id;
+    showToast('✅ ¡Perfil creado! Empezá a buscar trabajo');
+    goTo('swipe');
+  } else {
+    showToast('❌ Error al guardar. Intentá de nuevo.');
+  }
+  btn.disabled = false; btn.textContent = 'Empezar a buscar trabajo →';
+}
+
+// INIT
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loading').classList.add('hidden');
+    setTimeout(() => document.getElementById('loading').remove(), 500);
+  }, 1200);
+});
+</script>
+</body>
+</html>
